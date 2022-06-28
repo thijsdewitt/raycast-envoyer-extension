@@ -1,6 +1,6 @@
-import {ActionPanel, List, Action, LocalStorage, getPreferenceValues, closeMainWindow} from "@raycast/api";
+import {ActionPanel, List, Action, LocalStorage, getPreferenceValues} from "@raycast/api";
 import fetch from "node-fetch";
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 
 interface Preferences {
   envoyer_api_key: string;
@@ -42,14 +42,14 @@ export default function Command() {
           icon="command-icon.png"
           title={project.name}
           subtitle={project.last_deployment_timestamp}
-          actions={<ProjectActions project={project} />}
+          actions={<ProjectActions project={project}/>}
         />
       ))}
     </List>
   );
 }
 
-function ProjectActions({ project }: { project: Project }) {
+function ProjectActions({project}: { project: Project }) {
   return (
     <ActionPanel>
       <Action.Push
@@ -61,7 +61,7 @@ function ProjectActions({ project }: { project: Project }) {
               icon="command-icon.png"
               actions={
                 <ActionPanel>
-                  <Action.OpenInBrowser url={`https://envoyer.io/projects/${project.id}`} />
+                  <Action.OpenInBrowser url={`https://envoyer.io/projects/${project.id}`}/>
                 </ActionPanel>
               }
             />
@@ -77,29 +77,25 @@ function ProjectActions({ project }: { project: Project }) {
               }
             />
             <List.Item
-              title="Start New Deployment"
-              icon="command-icon.png"
-              actions={
-                <ActionPanel>
-                  <Action
-                    title={"Start New Deployment"}
-                    onAction={async () => {
-                      await fetch(`https://envoyer.io/api/projects/${project.id}/deployments`, {
+                title="Start New Deployment"
+                icon="command-icon.png"
+                actions={
+                  <ActionPanel>
+                    <Action.OpenInBrowser url={`https://envoyer.io/projects/${project.id}`} onOpen={() => {
+                      fetch(`https://envoyer.io/api/projects/${project.id}/deployments`, {
                         method: "POST",
                         headers: {
                           Authorization: `Bearer ${getPreferenceValues().envoyer_api_key}`,
                         },
                       });
-                      await closeMainWindow()
-                    }}
-                  />
-                </ActionPanel>
-              }
+                    }}/>
+                  </ActionPanel>
+                }
             />
           </List>
         }
       />
-      <Action.OpenInBrowser url={`https://envoyer.io/projects/${project.id}`} />
+      <Action.OpenInBrowser url={`https://envoyer.io/projects/${project.id}`}/>
     </ActionPanel>
   );
 }
