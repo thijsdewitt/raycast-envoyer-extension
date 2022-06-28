@@ -17,7 +17,7 @@ export default function Command() {
       const response = await fetch("https://envoyer.io/api/projects", {
         headers: {
           Authorization: `Bearer ${preferences.envoyer_api_key}`,
-        },
+    },
       });
       const data: { projects: Project[] } = (await response.json()) as { projects: Project[] };
       await LocalStorage.setItem("projects", JSON.stringify(data.projects));
@@ -77,20 +77,20 @@ function ProjectActions({project}: { project: Project }) {
               }
             />
             <List.Item
-                title="Start New Deployment"
-                icon="command-icon.png"
-                actions={
-                  <ActionPanel>
-                    <Action.OpenInBrowser url={`https://envoyer.io/projects/${project.id}`} onOpen={() => {
-                      fetch(`https://envoyer.io/api/projects/${project.id}/deployments`, {
-                        method: "POST",
-                        headers: {
-                          Authorization: `Bearer ${getPreferenceValues().envoyer_api_key}`,
-                        },
-                      });
-                    }}/>
-                  </ActionPanel>
-                }
+              title="Start New Deployment"
+              icon="command-icon.png"
+              actions={
+                <ActionPanel>
+                  <Action.OpenInBrowser url={`https://envoyer.io/projects/${project.id}`} onOpen={async () => {
+                    await fetch(`https://envoyer.io/api/projects/${project.id}/deployments`, {
+                      method: "POST",
+                      headers: {
+                        Authorization: `Bearer ${getPreferenceValues().envoyer_api_key}`,
+                      },
+                    });
+                  }}/>
+                </ActionPanel>
+              }
             />
           </List>
         }
